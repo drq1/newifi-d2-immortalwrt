@@ -12,6 +12,7 @@ env:
   REPO_URL: https://github.com/immortalwrt/immortalwrt
   REPO_BRANCH: openwrt-23.05
   CONFIG_FILE: .config
+  DIY_P2_SH: diy-part2.sh
   TZ: Asia/Shanghai
 
 jobs:
@@ -45,10 +46,12 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
-    - name: Load custom configuration
+    - name: Load custom configuration & Run DIY Script
       run: |
         [ -e $CONFIG_FILE ] && cp $CONFIG_FILE openwrt/.config
+        chmod +x $DIY_P2_SH
         cd openwrt
+        ../$DIY_P2_SH
         make defconfig
 
     - name: Download package
@@ -83,15 +86,18 @@ jobs:
         tag_name: Newifi-D2-${{ env.FILE_DATE }}
         files: ${{ env.FIRMWARE }}/*sysupgrade.bin
         body: |
-          ### ImmortalWrt 23.05 for Newifi D2 (Newifi 3)
+          ### ImmortalWrt 23.05 for Newifi D2 (纯有线高性能固件)
           * **架构**: `ramips/mt7621` (D-Team Newifi D2)
-          * **核心组件**:
+          * **有线优化**:
+            - **默认禁用 Wi-Fi**：纯有线路由模式，降低功耗、彻底杜绝无线射频热量与干扰
+            - **Turbo ACC 网络加速引擎**：集成硬件 Flow 流量分流与 BBR 拥塞控制
+            - **多核中断平衡 (irqbalance)**：优化多线程负载均衡，千兆转发低延迟
+          * **预装组件**:
             - sing-box 专属管理器: `HomeProxy`
             - 网络唤醒 (WOL)
             - KMS 激活服务器
             - ZeroTier 内网穿透
-            - AdGuard Home 管理界面 (核心推荐在 `/tmp` 或 U 盘运行)
+            - AdGuard Home 管理界面 (核心存放在 `/tmp` 内存运行)
             - USB 存储与磁盘管理支持 (Diskman)
-            - MTK 硬件 NAT 加速
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
