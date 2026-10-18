@@ -10,7 +10,7 @@ on:
 
 env:
   REPO_URL: https://github.com/immortalwrt/immortalwrt
-  REPO_BRANCH: openwrt-23.05
+  REPO_BRANCH: openwrt-24.10
   CONFIG_FILE: .config
   DIY_P2_SH: diy-part2.sh
   TZ: Asia/Shanghai
@@ -83,10 +83,11 @@ jobs:
       uses: softprops/action-gh-release@v2
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        tag_name: Newifi-D2-${{ env.FILE_DATE }}
+        tag_name: Newifi-D2-24.10-${{ env.FILE_DATE }}
         files: ${{ env.FIRMWARE }}/*sysupgrade.bin
         body: |
-          ### ImmortalWrt 23.05 for Newifi D2 (纯有线高性能固件)
+          ### ImmortalWrt 24.10 for Newifi D2 (Linux 6.6 纯有线高性能固件)
+          * **系统基底**: ImmortalWrt 24.10 (Linux 6.6 内核)
           * **架构**: `ramips/mt7621` (D-Team Newifi D2)
           * **有线优化**:
             - **默认禁用 Wi-Fi**：纯有线路由模式，降低功耗、彻底杜绝无线射频热量与干扰
